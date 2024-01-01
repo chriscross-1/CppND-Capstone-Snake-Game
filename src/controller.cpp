@@ -35,6 +35,21 @@ void Controller::HandleInput(bool &running, Snake &snake) const {
           ChangeDirection(snake, Snake::Direction::kRight,
                           Snake::Direction::kLeft);
           break;
+        case SDLK_RETURN:
+          if (running)
+            snake.speed += 0.02;
+          else
+            // TODO: Continue Game
+          break;
+        case SDLK_SPACE:
+          // TODO: Pause
+          break;
+        case SDLK_PLUS:
+          snake.GrowBody(1);
+          break;
+        case SDLK_ESCAPE:
+          snake.alive = false;
+          break;
       }
     }
   }
