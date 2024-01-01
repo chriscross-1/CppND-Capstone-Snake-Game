@@ -2,11 +2,13 @@
 #include <iostream>
 #include "SDL.h"
 
-Game::Game(std::size_t grid_width, std::size_t grid_height)
-    : snake(grid_width, grid_height),
+Game::Game(std::size_t grid_width, std::size_t grid_height, float speed)
+    : snake(grid_width, grid_height, speed),
       engine(dev()),
       random_w(0, static_cast<int>(grid_width - 1)),
-      random_h(0, static_cast<int>(grid_height - 1)) {
+      random_h(0, static_cast<int>(grid_height - 1)),
+      random_superFood(0, 5),
+      random_poorFood(0,10) {
   PlaceFood();
 }
 
@@ -29,8 +31,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
 
     frame_end = SDL_GetTicks();
 
-    // Keep track of how long each loop through the input/update/render cycle
-    // takes.
+    // Keep track of how long each loop through the input/update/render cycle takes.
     frame_count++;
     frame_duration = frame_end - frame_start;
 
@@ -41,9 +42,8 @@ void Game::Run(Controller const &controller, Renderer &renderer,
       title_timestamp = frame_end;
     }
 
-    // If the time for this frame is too small (i.e. frame_duration is
-    // smaller than the target ms_per_frame), delay the loop to
-    // achieve the correct frame rate.
+    // If the time for this frame is too small (i.e. frame_duration is smaller than the
+    // target ms_per_frame), delay the loop to achieve the correct frame rate.
     if (frame_duration < target_frame_duration) {
       SDL_Delay(target_frame_duration - frame_duration);
     }
@@ -55,11 +55,18 @@ void Game::PlaceFood() {
   while (true) {
     x = random_w(engine);
     y = random_h(engine);
-    // Check that the location is not occupied by a snake item before placing
-    // food.
+    // Check that the location is not occupied by a snake item before placing food.
     if (!snake.SnakeCell(x, y)) {
-      food.x = x;
-      food.y = y;
+      food.coordinates.x = x;
+      food.coordinates.y = y;
+
+      if (random_poorFood(engine) == 10)
+        food.type = +FoodType::Poor;
+      else if (random_superFood(engine) == 5)
+        food.type = +FoodType::Super;
+      else
+        food.type = +FoodType::Normal;
+
       return;
     }
   }
@@ -74,12 +81,23 @@ void Game::Update() {
   int new_y = static_cast<int>(snake.head_y);
 
   // Check if there's food over here
-  if (food.x == new_x && food.y == new_y) {
+  if (food.coordinates.x == new_x && food.coordinates.y == new_y) {
     score++;
+    int bodyGrow = 1;
+    float speed = 0.02;
+    if (food.type == +FoodType::Super)
+    {
+      score += 4;
+      bodyGrow = 5;
+      speed = 0.1;
+    } else if (food.type == +FoodType::Poor)
+    {
+      // Slow down snake for 5 seconds
+    }
     PlaceFood();
     // Grow snake and increase speed.
-    snake.GrowBody();
-    snake.speed += 0.02;
+    snake.GrowBody(bodyGrow);
+    snake.speed += speed;
   }
 }
 
