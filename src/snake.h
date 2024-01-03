@@ -1,6 +1,8 @@
 #ifndef SNAKE_H
 #define SNAKE_H
 
+#include <condition_variable>
+#include <mutex>
 #include <vector>
 #include "SDL.h"
 
@@ -21,6 +23,10 @@ class Snake {
   bool SnakeCell(int x, int y);
 
   Direction direction = Direction::kUp;
+
+  bool directionChanged;
+  std::mutex directionMutex;
+  std::condition_variable directionChangedCondition;
 
   float speed{0.1f};
   int size{1};

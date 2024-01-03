@@ -14,7 +14,7 @@ class Renderer {
            const std::string player_name);
   ~Renderer();
 
-  void Render(Snake const snake, Food const &food);
+  void Render(Snake const &snake, Food const &food);
   void UpdateWindowTitle(int score, int fps);
 
  private:

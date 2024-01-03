@@ -1,6 +1,6 @@
 #include "game.h"
-#include <iostream>
 #include "SDL.h"
+#include <iostream>
 
 Game::Game(std::size_t grid_width, std::size_t grid_height, float speed)
     : snake(grid_width, grid_height, speed),
@@ -12,7 +12,7 @@ Game::Game(std::size_t grid_width, std::size_t grid_height, float speed)
   PlaceFood();
 }
 
-void Game::Run(Controller const &controller, Renderer &renderer,
+void Game::Run(Controller &controller, Renderer &renderer,
                std::size_t target_frame_duration) {
   Uint32 title_timestamp = SDL_GetTicks();
   Uint32 frame_start;
@@ -21,11 +21,14 @@ void Game::Run(Controller const &controller, Renderer &renderer,
   int frame_count = 0;
   bool running = true;
 
+  // Input, Update, Render - the main game loop.
+  // Input as own thread to avoid bug where snake can move into itself after quick direction change
+  inputThread = std::thread(&Controller::HandleInput, &controller, std::ref(running), std::ref(snake)); // call member function on object v
+
   while (running) {
     frame_start = SDL_GetTicks();
 
-    // Input, Update, Render - the main game loop.
-    controller.HandleInput(running, snake);
+    // controller.HandleInput(running, snake);
     Update();
     renderer.Render(snake, food);
 
@@ -48,6 +51,8 @@ void Game::Run(Controller const &controller, Renderer &renderer,
       SDL_Delay(target_frame_duration - frame_duration);
     }
   }
+
+  inputThread.join();
 }
 
 void Game::PlaceFood() {
@@ -93,6 +98,7 @@ void Game::Update() {
     } else if (food.type == +FoodType::Poor)
     {
       // Slow down snake for 5 seconds
+      // New thread with game as reference, reduce speed, wait for 5 seconds, reset speed to level before, end thread
     }
     PlaceFood();
     // Grow snake and increase speed.

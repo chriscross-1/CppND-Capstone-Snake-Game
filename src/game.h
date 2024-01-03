@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <random>
+#include <thread>
 #include "SDL.h"
 #include "controller.h"
 #include "renderer.h"
@@ -11,7 +12,7 @@
 class Game {
  public:
   Game(std::size_t grid_width, std::size_t grid_height, float speed);
-  void Run(Controller const &controller, Renderer &renderer,
+  void Run(Controller &controller, Renderer &renderer,
            std::size_t target_frame_duration);
   int GetScore() const;
   int GetSize() const;
@@ -19,6 +20,7 @@ class Game {
  private:
   Snake snake;
   Food food;
+  std::thread inputThread;
 
   std::random_device dev;
   std::mt19937 engine;
