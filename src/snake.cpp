@@ -1,6 +1,7 @@
 #include "snake.h"
 #include <cmath>
 #include <iostream>
+#include <thread>
 
 void Snake::Update() {
   SDL_Point prev_cell{
@@ -22,6 +23,7 @@ void Snake::Update() {
 }
 
 void Snake::UpdateHead() {
+  std::lock_guard<std::mutex> guard(speedMutex);
   switch (direction) {
     case Direction::kUp:
       head_y -= speed;
@@ -78,4 +80,41 @@ bool Snake::SnakeCell(int x, int y) {
     }
   }
   return false;
+}
+
+void Snake::IncreaseSpeed(float v)
+{
+  std::lock_guard<std::mutex> guard(speedMutex);
+  if (v > 0)
+    speed += v;
+}
+
+void Snake::SlowDown()
+{
+  std::unique_lock<std::mutex> ulock(speedMutex);
+  auto oldSpeed = speed;
+  speed = 0.1;
+
+  // Slow down for 5 seconds
+  slowDownDuration = slowDownCycle;
+  ulock.unlock();
+
+  auto slowDownStart = std::chrono::system_clock::now();
+  auto expiredTime = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - slowDownStart).count();
+  while (alive && expiredTime < slowDownDuration)
+  {
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    expiredTime = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - slowDownStart).count();
+  }
+
+  ulock.lock();
+  speed = oldSpeed + (speed - 0.1);
+  ulock.unlock();
+}
+
+void Snake::IncreaseSlowDownDuration()
+{
+  // Add 5 seconds to slow down duration
+  std::lock_guard<std::mutex> guard(speedMutex);
+  slowDownDuration += slowDownCycle;
 }

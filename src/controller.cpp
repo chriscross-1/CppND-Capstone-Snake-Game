@@ -6,7 +6,7 @@
 
 void Controller::ChangeDirection(Snake &snake, Snake::Direction input,
                                  Snake::Direction opposite) const {
-  if (snake.alive && (snake.direction != opposite || snake.size == 1))
+  if (snake.alive && !snake.paused && (snake.direction != opposite || snake.size == 1))
   {
     std::unique_lock<std::mutex> ulock(snake.directionMutex);
     snake.directionChanged = false;
@@ -25,6 +25,7 @@ void Controller::HandleInput(bool &running, Snake &snake) {
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
     while (SDL_PollEvent(&e)) {
       if (e.type == SDL_QUIT) {
+        snake.alive = false;
         running = false;
       } else if (e.type == SDL_KEYDOWN) {
         switch (e.key.keysym.sym) {
@@ -48,16 +49,17 @@ void Controller::HandleInput(bool &running, Snake &snake) {
                             Snake::Direction::kLeft);
             break;
           case SDLK_RETURN:
-            if (running)
-              snake.speed += 0.02;
-            else
+            if (running && !snake.paused)
+              snake.IncreaseSpeed(0.02);
+            else;
               // TODO: Continue Game
             break;
           case SDLK_SPACE:
-            // TODO: Pause
+            snake.paused = snake.paused? false : true;
             break;
           case SDLK_PLUS:
-            snake.GrowBody(1);
+            if (!snake.paused)
+              snake.GrowBody(1);
             break;
           case SDLK_ESCAPE:
             snake.alive = false;

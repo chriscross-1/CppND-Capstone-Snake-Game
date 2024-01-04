@@ -23,7 +23,7 @@ void Game::Run(Controller &controller, Renderer &renderer,
 
   // Input, Update, Render - the main game loop.
   // Input as own thread to avoid bug where snake can move into itself after quick direction change
-  inputThread = std::thread(&Controller::HandleInput, &controller, std::ref(running), std::ref(snake)); // call member function on object v
+  inputThread = std::thread(&Controller::HandleInput, &controller, std::ref(running), std::ref(snake));
 
   while (running) {
     frame_start = SDL_GetTicks();
@@ -52,7 +52,10 @@ void Game::Run(Controller &controller, Renderer &renderer,
     }
   }
 
-  inputThread.join();
+  if (inputThread.joinable())
+    inputThread.join();
+  if (slowDownFuture.valid())
+    slowDownFuture.get();
 }
 
 void Game::PlaceFood() {
@@ -78,7 +81,7 @@ void Game::PlaceFood() {
 }
 
 void Game::Update() {
-  if (!snake.alive) return;
+  if (!snake.alive || snake.paused) return;
 
   snake.Update();
 
@@ -87,20 +90,44 @@ void Game::Update() {
 
   // Check if there's food over here
   if (food.coordinates.x == new_x && food.coordinates.y == new_y) {
-    score++;
-    int bodyGrow = 1;
+    int bodyGrow = 0;
     float speed = 0.02;
-    if (food.type == +FoodType::Super)
+
+    if (food.type == +FoodType::Normal)
     {
-      score += 4;
+      score++;
+      bodyGrow = 1;
+      speed = 0.02;
+    } else if (food.type == +FoodType::Super)
+    {
+      score += 5;
       bodyGrow = 5;
       speed = 0.1;
     } else if (food.type == +FoodType::Poor)
     {
       // Slow down snake for 5 seconds
-      // New thread with game as reference, reduce speed, wait for 5 seconds, reset speed to level before, end thread
+      if (!slowDownFuture.valid())
+      {
+        slowDownFuture = std::async(std::launch::async, &Snake::SlowDown, &snake);
+      }
+
+      else if (slowDownFuture.valid())
+      {
+        // Slow down again for 5 seconds if time has already seconds passed
+        if (slowDownFuture.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready)
+        {
+          slowDownFuture.get();
+          slowDownFuture = std::async(std::launch::async, &Snake::SlowDown, &snake);
+        } else
+        {
+          // Add 5 additional seconds otherwise
+          snake.IncreaseSlowDownDuration();
+        }
+      }
     }
+
     PlaceFood();
+
     // Grow snake and increase speed.
     snake.GrowBody(bodyGrow);
     snake.speed += speed;

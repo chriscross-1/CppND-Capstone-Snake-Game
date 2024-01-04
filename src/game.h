@@ -3,6 +3,7 @@
 
 #include <random>
 #include <thread>
+#include <future>
 #include "SDL.h"
 #include "controller.h"
 #include "renderer.h"
@@ -21,6 +22,7 @@ class Game {
   Snake snake;
   Food food;
   std::thread inputThread;
+  std::future<void> slowDownFuture;
 
   std::random_device dev;
   std::mt19937 engine;

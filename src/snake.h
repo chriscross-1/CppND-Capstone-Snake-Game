@@ -21,6 +21,9 @@ class Snake {
 
   void GrowBody(int size);
   bool SnakeCell(int x, int y);
+  void IncreaseSpeed(float v);
+  void SlowDown();
+  void IncreaseSlowDownDuration();
 
   Direction direction = Direction::kUp;
 
@@ -28,9 +31,12 @@ class Snake {
   std::mutex directionMutex;
   std::condition_variable directionChangedCondition;
 
+  std::mutex speedMutex;
+
   float speed{0.1f};
   int size{1};
   bool alive{true};
+  bool paused{false};
   float head_x;
   float head_y;
   std::vector<SDL_Point> body;
@@ -42,6 +48,8 @@ class Snake {
   int growing{0};
   int grid_width;
   int grid_height;
+  int slowDownDuration;
+  const int slowDownCycle{5};
 };
 
 #endif
