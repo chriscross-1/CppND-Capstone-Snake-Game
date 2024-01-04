@@ -12,7 +12,7 @@ Game::Game(std::size_t grid_width, std::size_t grid_height, float speed)
   PlaceFood();
 }
 
-void Game::Run(Controller &controller, Renderer &renderer,
+void Game::Run(std::shared_ptr<Controller> controller, std::shared_ptr<Renderer> renderer,
                std::size_t target_frame_duration, DifficultyLevel level) {
   Uint32 title_timestamp = SDL_GetTicks();
   Uint32 frame_start;
@@ -23,14 +23,14 @@ void Game::Run(Controller &controller, Renderer &renderer,
 
   // Input, Update, Render - the main game loop.
   // Input as own thread to avoid bug where snake can move into itself after quick direction change
-  inputThread = std::thread(&Controller::HandleInput, &controller, std::ref(running), snake, std::ref(*this), std::move(level));
+  inputThread = std::thread(&Controller::HandleInput, controller, std::ref(running), snake, std::ref(*this), std::move(level));
 
   while (running) {
     frame_start = SDL_GetTicks();
 
     // controller.HandleInput(running, snake);
     Update();
-    renderer.Render(snake, food);
+    renderer->Render(snake, food);
 
     frame_end = SDL_GetTicks();
 
@@ -40,7 +40,7 @@ void Game::Run(Controller &controller, Renderer &renderer,
 
     // After every second, update the window title.
     if (frame_end - title_timestamp >= 1000) {
-      renderer.UpdateWindowTitle(score, frame_count);
+      renderer->UpdateWindowTitle(score, frame_count);
       frame_count = 0;
       title_timestamp = frame_end;
     }

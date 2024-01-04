@@ -35,8 +35,8 @@ int main(int argc, char** argv) {
   std::cout << "\nPlease enter your name: ";
   std::cin >> name;
 
-  Renderer renderer(kScreenWidth, kScreenHeight, kGridWidth, kGridHeight, name);
-  Controller controller;
+  auto renderer = std::make_shared<Renderer>(kScreenWidth, kScreenHeight, kGridWidth, kGridHeight, name);
+  auto controller = std::make_shared<Controller>();
   Game game(kGridWidth, kGridHeight, kSpeed);
   game.Run(controller, renderer, kMsPerFrame, std::move(level));
   std::cout << "Game has terminated successfully!\n";
