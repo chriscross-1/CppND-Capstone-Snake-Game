@@ -9,14 +9,16 @@
 #include "renderer.h"
 #include "snake.h"
 #include "food.h"
+#include "difficultyLevel.h"
 
 class Game {
  public:
   Game(std::size_t grid_width, std::size_t grid_height, float speed);
   void Run(Controller &controller, Renderer &renderer,
-           std::size_t target_frame_duration);
+           std::size_t target_frame_duration, DifficultyLevel level);
   int GetScore() const;
   int GetSize() const;
+  void ResetScore();
 
  private:
   Snake snake;

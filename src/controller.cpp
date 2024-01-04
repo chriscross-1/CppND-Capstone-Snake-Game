@@ -1,4 +1,5 @@
 #include "controller.h"
+#include "game.h"
 #include "snake.h"
 #include "SDL.h"
 #include <iostream>
@@ -18,7 +19,7 @@ void Controller::ChangeDirection(Snake &snake, Snake::Direction input,
   return;
 }
 
-void Controller::HandleInput(bool &running, Snake &snake) {
+void Controller::HandleInput(bool &running, Snake &snake, Game &game, DifficultyLevel level) {
   while (running)
   {
     SDL_Event e;
@@ -49,16 +50,20 @@ void Controller::HandleInput(bool &running, Snake &snake) {
                             Snake::Direction::kLeft);
             break;
           case SDLK_RETURN:
-            if (running && !snake.paused)
-              snake.IncreaseSpeed(0.02);
-            else;
-              // TODO: Continue Game
+            if (level == +DifficultyLevel::Expert && snake.alive && !snake.paused)
+              snake.IncreaseSpeed(0.01);
+            else if (!snake.alive)
+            {
+              game.ResetScore();
+              snake.Restart();
+            }
             break;
           case SDLK_SPACE:
-            snake.paused = snake.paused? false : true;
+            if (level == +DifficultyLevel::Expert)
+              snake.paused = snake.paused? false : true;
             break;
           case SDLK_PLUS:
-            if (!snake.paused)
+            if (level == +DifficultyLevel::Expert && !snake.paused)
               snake.GrowBody(1);
             break;
           case SDLK_ESCAPE:

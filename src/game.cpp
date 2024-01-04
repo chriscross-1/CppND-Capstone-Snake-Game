@@ -13,7 +13,7 @@ Game::Game(std::size_t grid_width, std::size_t grid_height, float speed)
 }
 
 void Game::Run(Controller &controller, Renderer &renderer,
-               std::size_t target_frame_duration) {
+               std::size_t target_frame_duration, DifficultyLevel level) {
   Uint32 title_timestamp = SDL_GetTicks();
   Uint32 frame_start;
   Uint32 frame_end;
@@ -23,7 +23,7 @@ void Game::Run(Controller &controller, Renderer &renderer,
 
   // Input, Update, Render - the main game loop.
   // Input as own thread to avoid bug where snake can move into itself after quick direction change
-  inputThread = std::thread(&Controller::HandleInput, &controller, std::ref(running), std::ref(snake));
+  inputThread = std::thread(&Controller::HandleInput, &controller, std::ref(running), std::ref(snake), std::ref(*this), level);
 
   while (running) {
     frame_start = SDL_GetTicks();
@@ -97,12 +97,12 @@ void Game::Update() {
     {
       score++;
       bodyGrow = 1;
-      speed = 0.02;
+      speed = 0.01;
     } else if (food.type == +FoodType::Super)
     {
       score += 5;
       bodyGrow = 5;
-      speed = 0.1;
+      speed = 0.05;
     } else if (food.type == +FoodType::Poor)
     {
       // Slow down snake for 5 seconds
@@ -130,9 +130,14 @@ void Game::Update() {
 
     // Grow snake and increase speed.
     snake.GrowBody(bodyGrow);
-    snake.speed += speed;
+    snake.IncreaseSpeed(speed);
   }
 }
 
 int Game::GetScore() const { return score; }
 int Game::GetSize() const { return snake.size; }
+
+void Game::ResetScore()
+{
+  score = 0;
+}

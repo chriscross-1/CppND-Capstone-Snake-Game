@@ -15,7 +15,8 @@ class Snake {
         grid_height(grid_height),
         head_x(grid_width / 2),
         head_y(grid_height / 2),
-        speed(speed) {}
+        speed(speed),
+        initialSpeed(speed) {}
 
   void Update();
 
@@ -24,6 +25,7 @@ class Snake {
   void IncreaseSpeed(float v);
   void SlowDown();
   void IncreaseSlowDownDuration();
+  void Restart();
 
   Direction direction = Direction::kUp;
 
@@ -34,6 +36,7 @@ class Snake {
   std::mutex speedMutex;
 
   float speed{0.1f};
+  const float initialSpeed{0.1f};
   int size{1};
   bool alive{true};
   bool paused{false};
