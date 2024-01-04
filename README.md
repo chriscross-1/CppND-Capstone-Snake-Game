@@ -15,6 +15,12 @@ This is the Capstone project of the [Udacity C++ Nanodegree Program](https://www
 * The bug is fixed where the snake can move into itself after a quick direction change
 * In Expert mode it is possible to manually increase the speed (by pressing the Enter key), grow the snake's body (by pressing the + key) and to pause the snake (by pressing the Space key)
 
+## Rubric points
+* Loops, Functions, I/O: game.cpp, configAccessor.cpp, HighscoreHandler.cpp
+* Object Oriented Programming: configAccessor.cpp, food.h
+* Memory Management: game.cpp, controller.cpp, snake.cpp
+* Concurrency: game.cpp, snake.cpp
+
 ## Dependencies for Running Locally
 * cmake >= 3.7
   * All OSes: [click here for installation instructions](https://cmake.org/install/)
