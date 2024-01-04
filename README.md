@@ -16,10 +16,24 @@ This is the Capstone project of the [Udacity C++ Nanodegree Program](https://www
 * In Expert mode it is possible to manually increase the speed (by pressing the Enter key), grow the snake's body (by pressing the + key) and to pause the snake (by pressing the Space key)
 
 ## Rubric points
-* Loops, Functions, I/O: game.cpp, configAccessor.cpp, HighscoreHandler.cpp
-* Object Oriented Programming: configAccessor.cpp, food.h
+* Loops, Functions, I/O: game.cpp, configAccessor.cpp, highscoreHandler.cpp
+  * The project demonstrates an understanding of C++ functions and control structures: e.g. highscoreHandler.cpp, line 12
+  * The project reads data from a file and process the data, or the program writes data to a file: e.g. configAccessor.cpp, line 54
+  * The project accepts user input and processes the input: e.g. main.cpp, line 35
+* Object Oriented Programming: configAccessor.h, configAccessor.cpp, food.h
+  * One or more classes are added: e.g. configAccessor.h
+  * Class constructors utilize member initialization lists: e.g. configAccessor.cpp, line 10
+  * Classes abstract implementation details from their interfaces: e.g. highScoreHandler.h, line 46
 * Memory Management: main.cpp, game.cpp, controller.cpp, snake.cpp
+  * The project makes use of references in function declarations: e.g. game.cpp, line 26, controller.h, line 12
+  * The project uses scope / Resource Acquisition Is Initialization (RAII) where appropriate: snake.cpp, line 98
+  * The project uses move semantics to move data instead of copying it, where possible: e.g. main.cpp, line 41
+  * The project uses smart pointers instead of raw pointers: e.g. game.h, line 24, game.cpp, line 6
 * Concurrency: game.h, game.cpp, snake.h, snake.cpp
+  * The project uses multithreading: e.g. game.cpp, line 26, game.cpp, line 111
+  * A promise and future is used in the project: e.g. game.cpp, line 117
+  * A mutex or lock is used in the project: e.g. controller.cpp, line 12, snake.cpp, line 19
+  * A condition variable is used in the project: snake.cpp, line 21
 
 ## Dependencies for Running Locally
 * cmake >= 3.7
