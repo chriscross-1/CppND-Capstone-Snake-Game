@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
   Renderer renderer(kScreenWidth, kScreenHeight, kGridWidth, kGridHeight, name);
   Controller controller;
   Game game(kGridWidth, kGridHeight, kSpeed);
-  game.Run(controller, renderer, kMsPerFrame, level);
+  game.Run(controller, renderer, kMsPerFrame, std::move(level));
   std::cout << "Game has terminated successfully!\n";
 
   auto score = game.GetScore();

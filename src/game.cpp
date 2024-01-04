@@ -3,7 +3,7 @@
 #include <iostream>
 
 Game::Game(std::size_t grid_width, std::size_t grid_height, float speed)
-    : snake(grid_width, grid_height, speed),
+    : snake(std::make_shared<Snake>(grid_width, grid_height, speed)),
       engine(dev()),
       random_w(0, static_cast<int>(grid_width - 1)),
       random_h(0, static_cast<int>(grid_height - 1)),
@@ -23,7 +23,7 @@ void Game::Run(Controller &controller, Renderer &renderer,
 
   // Input, Update, Render - the main game loop.
   // Input as own thread to avoid bug where snake can move into itself after quick direction change
-  inputThread = std::thread(&Controller::HandleInput, &controller, std::ref(running), std::ref(snake), std::ref(*this), level);
+  inputThread = std::thread(&Controller::HandleInput, &controller, std::ref(running), snake, std::ref(*this), std::move(level));
 
   while (running) {
     frame_start = SDL_GetTicks();
@@ -64,7 +64,7 @@ void Game::PlaceFood() {
     x = random_w(engine);
     y = random_h(engine);
     // Check that the location is not occupied by a snake item before placing food.
-    if (!snake.SnakeCell(x, y)) {
+    if (!snake->SnakeCell(x, y)) {
       food.coordinates.x = x;
       food.coordinates.y = y;
 
@@ -81,12 +81,12 @@ void Game::PlaceFood() {
 }
 
 void Game::Update() {
-  if (!snake.alive || snake.paused) return;
+  if (!snake->alive || snake->paused) return;
 
-  snake.Update();
+  snake->Update();
 
-  int new_x = static_cast<int>(snake.head_x);
-  int new_y = static_cast<int>(snake.head_y);
+  int new_x = static_cast<int>(snake->head_x);
+  int new_y = static_cast<int>(snake->head_y);
 
   // Check if there's food over here
   if (food.coordinates.x == new_x && food.coordinates.y == new_y) {
@@ -108,7 +108,7 @@ void Game::Update() {
       // Slow down snake for 5 seconds
       if (!slowDownFuture.valid())
       {
-        slowDownFuture = std::async(std::launch::async, &Snake::SlowDown, &snake);
+        slowDownFuture = std::async(std::launch::async, &Snake::SlowDown, snake);
       }
 
       else if (slowDownFuture.valid())
@@ -117,11 +117,11 @@ void Game::Update() {
         if (slowDownFuture.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready)
         {
           slowDownFuture.get();
-          slowDownFuture = std::async(std::launch::async, &Snake::SlowDown, &snake);
+          slowDownFuture = std::async(std::launch::async, &Snake::SlowDown, snake);
         } else
         {
           // Add 5 additional seconds otherwise
-          snake.IncreaseSlowDownDuration();
+          snake->IncreaseSlowDownDuration();
         }
       }
     }
@@ -129,13 +129,13 @@ void Game::Update() {
     PlaceFood();
 
     // Grow snake and increase speed.
-    snake.GrowBody(bodyGrow);
-    snake.IncreaseSpeed(speed);
+    snake->GrowBody(bodyGrow);
+    snake->IncreaseSpeed(speed);
   }
 }
 
 int Game::GetScore() const { return score; }
-int Game::GetSize() const { return snake.size; }
+int Game::GetSize() const { return snake->size; }
 
 void Game::ResetScore()
 {

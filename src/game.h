@@ -21,7 +21,7 @@ class Game {
   void ResetScore();
 
  private:
-  Snake snake;
+  std::shared_ptr<Snake> snake;
   Food food;
   std::thread inputThread;
   std::future<void> slowDownFuture;
