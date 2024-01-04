@@ -1,12 +1,19 @@
 # CPPND: Capstone Snake Game Example
 
-This is a starter repo for the Capstone project in the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213). The code for this repo was inspired by [this](https://codereview.stackexchange.com/questions/212296/snake-game-in-c-with-sdl) excellent StackOverflow post and set of responses.
+This is the Capstone project of the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213). The code for this repo was inspired by [this](https://codereview.stackexchange.com/questions/212296/snake-game-in-c-with-sdl) excellent StackOverflow post and set of responses.
 
 <img src="snake_game.gif"/>
 
-The Capstone Project gives you a chance to integrate what you've learned throughout this program. This project will become an important part of your portfolio to share with current and future colleagues and employers.
-
-In this project, you can build your own C++ application or extend this Snake game, following the principles you have learned throughout this Nanodegree Program. This project will demonstrate that you can independently create applications using a wide range of C++ features.
+## New features
+* 3 different difficulty levels (Beginner, Advanced, Expert), where the configuration data is read out of a configuration file (e.g. data/configBeginner.cfg)
+* If no argument is given, the default level is Beginner
+* Use ./SnakeGame -a or ./SnakeGame --advanced for level Advanced and ./SnakeGame -e or ./SnakeGame --expert for level Expert
+* The user will be asked for the name before starting the game
+* New highscores will be saved to the file data/highscores.txt (only if the score is higher than the last highscore) with name, score and date
+* It is possible to end the game (Escape) and restart the game (Enter) when the game is over. After a restart the score will not be saved
+* Beside the normal food, there are two addiditonal food types (Super and Poor). With the green super food, the snake will grow 5 fields and increase the speed by factor 5 compared to the normal food. With the red poor food the snake will slow down for 5 seconds.
+* The bug is fixed where the snake can move into itself after a quick direction change
+* In Expert mode it is possible to manually increase the speed (by pressing the Enter key), grow the snake's body (by pressing the + key) and to pause the snake (by pressing the Space key)
 
 ## Dependencies for Running Locally
 * cmake >= 3.7
