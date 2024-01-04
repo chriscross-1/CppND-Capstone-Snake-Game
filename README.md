@@ -14,6 +14,7 @@ This is the Capstone project of the [Udacity C++ Nanodegree Program](https://www
 * Beside the normal food, there are two addiditonal food types (Super and Poor). With the green super food, the snake will grow 5 fields and increase the speed by factor 5 compared to the normal food. With the red poor food the snake will slow down for 5 seconds.
 * The bug is fixed where the snake can move into itself after a quick direction change
 * In Expert mode it is possible to manually increase the speed (by pressing the Enter key), grow the snake's body (by pressing the + key) and to pause the snake (by pressing the Space key)
+* Using better_enums
 
 ## Rubric points
 * Loops, Functions, I/O: game.cpp, configAccessor.cpp, highscoreHandler.cpp
@@ -53,9 +54,10 @@ This is the Capstone project of the [Udacity C++ Nanodegree Program](https://www
 ## Basic Build Instructions
 
 1. Clone this repo.
-2. Make a build directory in the top level directory: `mkdir build && cd build`
-3. Compile: `cmake .. && make`
-4. Run it: `./SnakeGame`.
+2. Init and update submodule for access to better_enums: `git submodule init` and `git submodule update`
+3. Make a build directory in the top level directory: `mkdir build && cd build`
+4. Compile: `cmake .. && make`
+5. Run it: `./SnakeGame`.
 
 
 ## CC Attribution-ShareAlike 4.0 International
