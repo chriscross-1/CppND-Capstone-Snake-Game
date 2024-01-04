@@ -67,7 +67,8 @@ void Controller::HandleInput(bool &running, std::shared_ptr<Snake> snake, Game &
               snake->GrowBody(1);
             break;
           case SDLK_ESCAPE:
-            snake->Die();
+            if (snake->alive)
+              snake->Die();
             break;
         }
       }
