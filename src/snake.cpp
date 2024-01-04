@@ -99,7 +99,7 @@ void Snake::SlowDown()
 {
   std::unique_lock<std::mutex> ulock(speedMutex);
   auto oldSpeed = speed;
-  speed = 0.1;
+  speed = initialSpeed;
 
   // Slow down for 5 seconds
   slowDownDuration = slowDownCycle;
@@ -114,7 +114,7 @@ void Snake::SlowDown()
   }
 
   ulock.lock();
-  speed = oldSpeed + (speed - 0.1);
+  speed = oldSpeed + (speed - initialSpeed);
   ulock.unlock();
 }
 
