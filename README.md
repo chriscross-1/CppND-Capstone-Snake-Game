@@ -18,8 +18,8 @@ This is the Capstone project of the [Udacity C++ Nanodegree Program](https://www
 ## Rubric points
 * Loops, Functions, I/O: game.cpp, configAccessor.cpp, HighscoreHandler.cpp
 * Object Oriented Programming: configAccessor.cpp, food.h
-* Memory Management: game.cpp, controller.cpp, snake.cpp
-* Concurrency: game.cpp, snake.cpp
+* Memory Management: main.cpp, game.cpp, controller.cpp, snake.cpp
+* Concurrency: game.h, game.cpp, snake.h, snake.cpp
 
 ## Dependencies for Running Locally
 * cmake >= 3.7
