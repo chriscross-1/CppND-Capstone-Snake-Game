@@ -67,7 +67,7 @@ void Controller::HandleInput(bool &running, Snake &snake, Game &game, Difficulty
               snake.GrowBody(1);
             break;
           case SDLK_ESCAPE:
-            snake.alive = false;
+            snake.Die();
             break;
         }
       }

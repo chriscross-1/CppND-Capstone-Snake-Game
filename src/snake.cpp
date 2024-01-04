@@ -62,20 +62,9 @@ void Snake::UpdateBody(SDL_Point &current_head_cell, SDL_Point &prev_head_cell) 
   // Check if the snake has died.
   for (auto const &item : body) {
     if (current_head_cell.x == item.x && current_head_cell.y == item.y) {
-      alive = false;
+      Die();
     }
   }
-}
-
-void Snake::Restart()
-{
-  body.clear();
-  size = 1;
-  head_x = grid_width / 2,
-  head_y = grid_height / 2,
-  alive = true;
-  speed = initialSpeed;
-  direction = Direction::kUp;
 }
 
 void Snake::GrowBody(int size) { growing = size; }
@@ -91,6 +80,12 @@ bool Snake::SnakeCell(int x, int y) {
     }
   }
   return false;
+}
+
+void Snake::Die()
+{
+  alive = false;
+  std::cout << "Game over.\nClose the window to save the current score (only when a new highscore was reached).\nPress Enter to start a new game (current score will not be saved).\n";
 }
 
 void Snake::IncreaseSpeed(float v)
@@ -128,4 +123,15 @@ void Snake::IncreaseSlowDownDuration()
   // Add 5 seconds to slow down duration
   std::lock_guard<std::mutex> guard(speedMutex);
   slowDownDuration += slowDownCycle;
+}
+
+void Snake::Restart()
+{
+  body.clear();
+  size = 1;
+  head_x = grid_width / 2,
+  head_y = grid_height / 2,
+  alive = true;
+  speed = initialSpeed;
+  direction = Direction::kUp;
 }

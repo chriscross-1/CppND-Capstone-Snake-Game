@@ -4,7 +4,7 @@
 #include "difficultyLevel.h"
 #include "game.h"
 #include "renderer.h"
-#include "highScoreSaver.h"
+#include "highScoreHandler.h"
 
 int main(int argc, char** argv) {
   // Get difficulty level
@@ -41,16 +41,19 @@ int main(int argc, char** argv) {
   game.Run(controller, renderer, kMsPerFrame, level);
   std::cout << "Game has terminated successfully!\n";
 
-  // Save score when new highscore was reached
   auto score = game.GetScore();
-  if (HighScoreSaver::NewHighscoreReached(score))
-  {
-    std::cout << "New highscore reached!\n";
-    HighScoreSaver::Save(name, score);
-  }
-  
   std::cout << "Name:  " << name << "\n";
   std::cout << "Score: " << score << "\n";
   std::cout << "Size:  " << game.GetSize() << "\n";
+  
+  // Save score when new highscore was reached
+  if (HighScoreHandler::NewHighscoreReached(score))
+  {
+    std::cout << "New highscore reached!\n";
+    HighScoreHandler::SaveHighscore(name, score);
+  } else
+  {
+    std::cout << "No new highscore reached (current highscore: " << HighScoreHandler::GetCurrentHighscore() << ")\n";
+  }
   return 0;
 }

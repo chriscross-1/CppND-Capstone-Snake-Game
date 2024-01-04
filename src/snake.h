@@ -22,6 +22,7 @@ class Snake {
 
   void GrowBody(int size);
   bool SnakeCell(int x, int y);
+  void Die();
   void IncreaseSpeed(float v);
   void SlowDown();
   void IncreaseSlowDownDuration();

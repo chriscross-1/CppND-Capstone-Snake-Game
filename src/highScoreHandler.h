@@ -6,14 +6,22 @@
 
 static const std::string highscoreFilePath = "../data/highscores.txt";
 
-class HighScoreSaver
+class HighScoreHandler
 {
 public:
     static bool NewHighscoreReached(size_t score)
     {
         std::fstream highscoreFile;
-        size_t highscore = 0;
+        size_t highscore = GetCurrentHighscore();
 
+        return score > highscore;
+    }
+    
+    static size_t GetCurrentHighscore()
+    {
+        std::fstream highscoreFile;
+        size_t highscore = 0;
+        
         highscoreFile.open(highscoreFilePath, std::fstream::in);
 
         // Get last score from highscore file which is the highest score
@@ -26,14 +34,16 @@ public:
                 std::istringstream linestream(line);
                 linestream >> name >> highscore;
             }
-
             highscoreFile.close();
+        } else
+        {
+            std::cout << "Error: Couldn't open highscore file in " << highscoreFilePath << "\n";
         }
 
-        return score > highscore;
+        return highscore;
     }
 
-    static void Save(std::string playerName, size_t highscore)
+    static void SaveHighscore(std::string playerName, size_t highscore)
     {
         std::fstream highscoreFile;
         highscoreFile.open(highscoreFilePath, std::fstream::app);
